@@ -1,11 +1,11 @@
 import { Login } from "./Login";
 
-export default function LoginPage({
+export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  searchParams: any;
 }) {
-  // const wantsMagicLink = searchParams?.magicLink === "yes";
-  const wantsMagicLink = true;
+  const params = await searchParams;
+  const wantsMagicLink = params.magicLink === "yes"
   return <Login isPasswordLogin={!wantsMagicLink} />;
 }

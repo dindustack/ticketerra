@@ -1,3 +1,5 @@
+import React from "react";
+
 interface InputProps {
   id: string;
   label: string;
@@ -5,17 +7,14 @@ interface InputProps {
   disabled?: boolean;
 }
 
-export const FormInput: React.FC<InputProps> = ({
-  id,
-  label,
-  type = "text",
-  disabled,
-}) => {
-  return (
-    <div className="w-full relative">
-      
+export const FormInput = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ id, label, type = "text", disabled }, ref) => {
+    return (
+      <div className="w-full relative">
         <input
           id={id}
+          name={id}
+          ref={ref}
           disabled={disabled}
           placeholder=""
           type={type}
@@ -59,6 +58,9 @@ export const FormInput: React.FC<InputProps> = ({
         >
           {label}
         </label>
-    </div>
-  );
-};
+      </div>
+    );
+  }
+);
+
+FormInput.displayName = "FormInput";

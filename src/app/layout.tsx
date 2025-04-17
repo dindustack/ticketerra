@@ -58,7 +58,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${uniform.variable} ${wagner.variable}`}>
-      <body className="font-uniform antialiased bg-[#fdfdfd] min-h-screen overflow-x-hidden m-0 p-0">
+      <body className="font-uniform antialiased bg-[#f9f5f2] min-h-screen overflow-x-hidden m-0 p-0">
         <main>{children}</main>
       </body>
     </html>

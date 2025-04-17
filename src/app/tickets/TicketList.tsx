@@ -20,7 +20,7 @@ export function TicketList({ tickets }: TicketsProps) {
           href={`/tickets/details/${ticket.id}`}
           className="cursor"
         >
-          <div className="flex flex-col space-y-2 border border-black mb-4 rounded-md py-4 px-2 bg-white">
+          <div className="flex flex-col space-y-2 border border-black mb-4 rounded-sm py-4 px-2 bg-white">
             <span>{`Ticket ${ticket.id}`}</span>
             <span className="text-lg font-medium">{ticket.title}</span>
             <span className="px-2 text-purple border border-purple bg-cyan rounded-full w-[fit-content]">

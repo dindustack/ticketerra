@@ -1,25 +1,50 @@
-"use client"
+"use client";
 import Link from "next/link";
 import { FormInput } from "../../components/Form/Input";
+import { useRef } from "react";
+import { getSupabaseBrowserClient } from "@/supabase-utils/browserClient";
+import loginImage from "../../public/image.gif";
+import Image from "next/image";
 
 type LoginProps = {
   isPasswordLogin: boolean;
 };
 
 export const Login = ({ isPasswordLogin }: LoginProps) => {
+  const passwordInputRef = useRef<HTMLInputElement>(null);
+  const emailInputRef = useRef<HTMLInputElement>(null);
+  const supabase = getSupabaseBrowserClient();
+
   return (
     <form
+      action={isPasswordLogin ? "/auth/pw-login" : "/auth/magic-link"}
+      method="POST"
       onSubmit={(event) => {
-        event.preventDefault();
-        if (isPasswordLogin) {
-          alert("User wants to login with password");
-        } else {
-          alert("User wants to login with magic link");
+        isPasswordLogin && event.preventDefault();
+
+        const email = emailInputRef.current?.value;
+        const password = passwordInputRef.current?.value;
+
+        if (isPasswordLogin && email && password) {
+          supabase.auth
+            .signInWithPassword({
+              email,
+              password,
+            })
+            .then((result) => {
+              if (result.data?.user) {
+                alert("User wants to login with password");
+              } else {
+                alert("User wants to login with magic link");
+              }
+            });
         }
       }}
     >
-      <div className="flex justify-between bg-black h-screen p-4 overflow-hidden">
-        <div className="w-1/2 hidden lg:block"></div>
+      <div className="flex justify-between lg:space-x-4 bg-black h-screen p-4 overflow-hidden">
+        <div className="w-1/2 hidden lg:block">
+          <Image src={loginImage} alt="woman skating" className="size-full object-cover rounded-lg" />
+        </div>
         <div className="md:w-full lg:w-1/2 rounded-lg bg-white p-4 md:p-16 h-full">
           <div className="h-[80vh] flex flex-col justify-center my-auto space-y-4 md:space-y-8">
             <div className="flex flex-col space-y-4">
@@ -37,10 +62,15 @@ export const Login = ({ isPasswordLogin }: LoginProps) => {
 
             <fieldset>
               <div className="flex flex-col mt-8 space-y-8">
-                <FormInput label="Email" id="email" />
+                <FormInput label="Email" id="email" ref={emailInputRef} />
 
                 {isPasswordLogin && (
-                  <FormInput label="Password" type="password" id="password" />
+                  <FormInput
+                    label="Password"
+                    type="password"
+                    id="password"
+                    ref={passwordInputRef}
+                  />
                 )}
               </div>
             </fieldset>
@@ -70,7 +100,7 @@ export const Login = ({ isPasswordLogin }: LoginProps) => {
             </div>
             <button
               type="submit"
-              className="bg-black text-white w-full py-4 rounded-xl"
+              className="bg-black text-white font-medium w-full py-4 rounded-xl"
             >
               {`Sign in with `}
               {isPasswordLogin ? "Password" : "Magic Link"}
