@@ -1,7 +1,7 @@
 "use client"
 import { CircleCheckBig } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 type NavItem = {
   label: string;

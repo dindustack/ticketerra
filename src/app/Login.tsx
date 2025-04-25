@@ -1,10 +1,12 @@
 "use client";
-import Link from "next/link";
-import { FormInput } from "../../components/Form/Input";
-import { useRef } from "react";
 import { getSupabaseBrowserClient } from "@/supabase-utils/browserClient";
-import loginImage from "../../public/image.gif";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef } from "react";
+import { toast } from "sonner";
+import { FormInput } from "../../components/Form/Input";
+import loginImage from "../../public/image.gif";
 
 type LoginProps = {
   isPasswordLogin: boolean;
@@ -14,6 +16,18 @@ export const Login = ({ isPasswordLogin }: LoginProps) => {
   const passwordInputRef = useRef<HTMLInputElement>(null);
   const emailInputRef = useRef<HTMLInputElement>(null);
   const supabase = getSupabaseBrowserClient();
+    const router = useRouter();
+
+   useEffect(() => {
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange((event, session) => {
+        if (event === "SIGNED_IN") {
+          router.push("/tickets");
+        }
+      });
+      return () => subscription.unsubscribe();
+    }, [router, supabase.auth]);
 
   return (
     <form
@@ -33,9 +47,23 @@ export const Login = ({ isPasswordLogin }: LoginProps) => {
             })
             .then((result) => {
               if (result.data?.user) {
-                alert("User wants to login with password");
+                console.log("Hello");
+                toast.success("Your login was successful", {
+                  style: {
+                    background: "#22c55e",
+                    color: "white",
+                    fontSize: "1.125rem",
+                  },
+                });
+                router.push("/tickets");
               } else {
-                alert("User wants to login with magic link");
+                toast.error("Please check login details", {
+                  style: {
+                    background: "#ef4444",
+                    color: "white",
+                    fontSize: "1.125rem",
+                  },
+                });
               }
             });
         }
@@ -43,7 +71,7 @@ export const Login = ({ isPasswordLogin }: LoginProps) => {
     >
       <div className="flex justify-between lg:space-x-4 bg-black h-screen p-4 overflow-hidden">
         <div className="w-1/2 hidden lg:block">
-          <Image src={loginImage} alt="woman skating" className="size-full object-cover rounded-lg" />
+          <Image src={loginImage} alt="woman skating" className="size-full object-cover rounded-lg" priority />
         </div>
         <div className="md:w-full lg:w-1/2 rounded-lg bg-white p-4 md:p-16 h-full">
           <div className="h-[80vh] flex flex-col justify-center my-auto space-y-4 md:space-y-8">
@@ -100,7 +128,7 @@ export const Login = ({ isPasswordLogin }: LoginProps) => {
             </div>
             <button
               type="submit"
-              className="bg-black text-white font-medium w-full py-4 rounded-xl"
+              className="bg-black text-white  font-medium w-full py-4 rounded-xl"
             >
               {`Sign in with `}
               {isPasswordLogin ? "Password" : "Magic Link"}

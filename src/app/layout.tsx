@@ -1,6 +1,7 @@
 import localFont from "next/font/local";
 
 import "./globals.css";
+import { Toaster } from "sonner";
 
 const uniform = localFont({
   src: [
@@ -60,6 +61,7 @@ export default function RootLayout({
     <html lang="en" className={`${uniform.variable} ${wagner.variable}`}>
       <body className="font-uniform antialiased bg-[#f9f5f2] min-h-screen overflow-x-hidden m-0 p-0">
         <main>{children}</main>
+        <Toaster position="top-right" />
       </body>
     </html>
   );
